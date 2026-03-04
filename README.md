@@ -1,65 +1,73 @@
 # users-teams
 users and teams from Yandex and Google forms 
 
+# Скрипты для сбора данных из форм (Google / Yandex)
 
-google_script.py
-Для сбора данных с гугл формы использует Service Account. Для работы необходим json файл (service_account.json) от сервисного аккаунта, у которого есть доступ к таблице от гугл формы.
+Набор инструментов для автоматизации сбора данных из Google Forms или Яндекс Форм и последующей настройки через `auto-setup.py`.
 
-Данные в коде, которые надо менять:
-SERVICE_ACCOUNT_FILE = 'название JSON файла' (по дефолту service_account.json)
-SHEET_NAME = "название таблицы" (таблица, куда сгружаются ответы из формы)
+## Состав проекта
+* `google_script.py` — сбор данных из Google форм.
+* `yandex_script.py` — сбор данных из Яндекс Форм.
+* `run.sh` — скрипт запуска.
 
-На выходе создает два файла users.csv и teams.csv для auto-setup.py
+---
 
+## 1. Google Script (`google_script.py`)
+Использует Service Account для доступа к данным. Для работы необходим json файл (service_account.json) от сервисного аккаунта, у которого есть доступ к таблице от гугл формы.
 
-Гугл форма
-•	Перед работой необходимо привязать форму к гугл таблице. 
-•	После в Google Cloud (https://console.cloud.google.com/) необходимо создать новый проект. 
-•	В поиске сверху ввести «Google Sheets API» и нажаит Enable (Включить). Сделать то же самое для «Google Drive API».
-•	После перейти в Service Accounts (https://console.cloud.google.com/iam-admin/serviceaccounts), выбрать созданный проект.
-•	Нажать «Create service account» и заполнить необходимые поля. Дать роль Editor.
-•	В списке созданных аккаунтов нажать на почту этого аккаунта, перейти во вкладку Keys -> Add Key -> Create new key -> JSON и скачать файл.
-•	В привязанной к форме гугл таблице необходимо нажать «Поделиться» и добавить по почте сервисный аккаунт (убедиться, что роль Editor). 
+### Подготовка гугл формы
+1. Привяжите форму к Google Таблице.
+2. В [Google Cloud Console](https://console.cloud.google.com/):
+   - Создайте проект.
+   - Включите **Google Sheets API** и **Google Drive API**.
+   - В разделе [Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts) создайте аккаунт с ролью **Editor**.
+   - Вкладка **Keys** -> **Add Key** -> **Create new key** -> (JSON). Скачайте файл.
+3. В самой Google Таблице нажмите «Поделиться» и добавьте email сервисного аккаунта с правами **Editor**.
 
+### Настройка кода
+В файле `google_script.py` измените:
+- `SERVICE_ACCOUNT_FILE` — путь к вашему JSON-файлу (по дефолту `service_account.json`).
+- `SHEET_NAME` — точное название таблицы.
 
-yandex_script.py
-API работает только при форме из категории «Формы для бизнеса». Для сбора данных требуются: OAuth-токен, ID организации, ID формы. 
+**Выходные файлы:** `users.csv` и `teams.csv`.
 
-Данные в коде, которые надо менять: 
-OAUTH_TOKEN = "токен"
-ORG_ID = "id организации"
-SURVEY_ID = "id формы"
+---
 
-На выходе создает два файла users.csv и teams.csv для auto-setup.py
+## 2. Yandex Script (`yandex_script.py`)
+Работает только с формой из категории **«Формы для бизнеса»**.
 
+### Подготовка (Yandex)
+1. **OAuth-токен:** Создайте приложение на [oauth.yandex.ru](https://oauth.yandex.ru/). 
+   - Тип: «Для доступа к API или отладки».
+   - Доступ к данным: `forms:read` и `forms:write`.
+   - В созданном приложении скопируйте ClientID. После перейдите по ссылке, вставив в нее скопированный ID: `https://oauth.yandex.ru/authorize?response_type=token&client_id=ВАШ_ID`.
+2. **ID Организации:** берется в [профиле организации](https://center.yandex.cloud/).
+3. **ID Формы:** берется из URL ссылки на форму, пример: `https://forms.yandex.ru/cloud/admin/ID_ФОРМЫ/edit`.
 
-Яндекс форма
-•	Перед работой скрипта необходимо получить OAuth-токен. По ссылке https://oauth.yandex.ru/ необходимо создать новое приложение (Создать приложение -> «Для доступа к API или отладки» -> в Доступе к данным указать forms:read и forms:write).
-•	Далее в созданном приложении копируем ClientID и переходим по ссылке, подставляя скопированное: https://oauth.yandex.ru/authorize?response_type=token&client_id=ТВОЙ_CLIENT_ID
-•	После разрешения доступа выведется OAuth-токен, который надо сохранить.
-•	ID организации берется в профиле организации (https://center.yandex.cloud/)
-•	ID формы берется из URL ссылки на форму, пример: (https://forms.yandex.ru/cloud/admin/ID_ФОРМЫ/edit)
+### Настройка кода
+В файле `yandex_script.py` измените:
+- `OAUTH_TOKEN` — OAuth-токен.
+- `ORG_ID` — ID организации.
+- `SURVEY_ID` — ID формы.
 
+**Выходные файлы:** `users.csv` и `teams.csv`.
 
-run.sh
-По порядку запускает google_script.py или yandex_script.py в зависимости от выбора платформы, после запускает auto-setup.py
+---
 
-Необходимые пакеты в системе: 
-•	python3-pip: Инструмент для установки библиотек.
-•	python3-venv: Модуль для создания изолированных окружений.
+## 3. run.sh
+Устанавливает необходимые библиотеки, по порядку запускает `google_script.py` или `yandex_script.py` в зависимости от выбора платформы, после запускает `auto-setup.py`.
 
-Данные в коде, которые надо менять:
-PLATFORM="yandex" (вписывать "yandex" или "google").
+### Необходимые пакеты в системе
+* `python3-pip`
+* `python3-venv`
 
-В зависимости от платформы ставит нужные библиотеки.
-Устанавливаемые библиотеки для работы google:
-•	gspread: Основной программный интерфейс для работы с Google Таблицами. Позволяет скрипту fetch_data.py открывать таблицы по названию, читать содержимое листов и извлекать значения из ячеек как обычные списки Python.
-•	oauth2client: Реализация протокола авторизации OAuth 2.0. Использует данные из файла service_account.json для получения временных токенов доступа у серверов Google. Без этой библиотеки безопасное подключение к защищенной таблице невозможно.
-Устанавливаемые библиотеки для работы yandex:
-•	request: используется для API.
+### Настройка кода
+- `PLATFORM` — вписывать "yandex" или "google".
 
-
-Как запускать (после установки CTFd):
-•	Переместить файлы в нужное место: mv auto-setup.py yandex_script.py google_script.py run.sh ctfd-config.json service_account.json ctfd/
-•	Запустить run.sh (./run.sh)
-
+### Настройка и использование
+1. Переместите файлы в рабочую директорию (например, в папку с CTFd):
+   ```bash
+   mv auto-setup.py yandex_script.py google_script.py run.sh ctfd-config.json service_account.json ctfd/
+2. Запустить run.sh
+   ```bash
+   ./run.sh
