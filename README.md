@@ -2,7 +2,7 @@
 users and teams from Yandex and Google forms 
 
 
-1. google_script.py
+google_script.py
 Для сбора данных с гугл формы использует Service Account. Для работы необходим json файл (service_account.json) от сервисного аккаунта, у которого есть доступ к таблице от гугл формы.
 
 Данные в коде, которые надо менять:
@@ -12,7 +12,7 @@ SHEET_NAME = "название таблицы" (таблица, куда сгр�
 На выходе создает два файла users.csv и teams.csv для auto-setup.py
 
 
-2. Гугл форма
+Гугл форма
 •	Перед работой необходимо привязать форму к гугл таблице. 
 •	После в Google Cloud (https://console.cloud.google.com/) необходимо создать новый проект. 
 •	В поиске сверху ввести «Google Sheets API» и нажаит Enable (Включить). Сделать то же самое для «Google Drive API».
@@ -22,7 +22,7 @@ SHEET_NAME = "название таблицы" (таблица, куда сгр�
 •	В привязанной к форме гугл таблице необходимо нажать «Поделиться» и добавить по почте сервисный аккаунт (убедиться, что роль Editor). 
 
 
-3. yandex_script.py
+yandex_script.py
 API работает только при форме из категории «Формы для бизнеса». Для сбора данных требуются: OAuth-токен, ID организации, ID формы. 
 
 Данные в коде, которые надо менять: 
@@ -33,7 +33,7 @@ SURVEY_ID = "id формы"
 На выходе создает два файла users.csv и teams.csv для auto-setup.py
 
 
-4. Яндекс форма
+Яндекс форма
 •	Перед работой скрипта необходимо получить OAuth-токен. По ссылке https://oauth.yandex.ru/ необходимо создать новое приложение (Создать приложение -> «Для доступа к API или отладки» -> в Доступе к данным указать forms:read и forms:write).
 •	Далее в созданном приложении копируем ClientID и переходим по ссылке, подставляя скопированное: https://oauth.yandex.ru/authorize?response_type=token&client_id=ТВОЙ_CLIENT_ID
 •	После разрешения доступа выведется OAuth-токен, который надо сохранить.
@@ -41,7 +41,7 @@ SURVEY_ID = "id формы"
 •	ID формы берется из URL ссылки на форму, пример: (https://forms.yandex.ru/cloud/admin/ID_ФОРМЫ/edit)
 
 
-5. run.sh
+run.sh
 По порядку запускает google_script.py или yandex_script.py в зависимости от выбора платформы, после запускает auto-setup.py
 
 Необходимые пакеты в системе: 
@@ -59,7 +59,7 @@ PLATFORM="yandex" (вписывать "yandex" или "google").
 •	request: используется для API.
 
 
-6. Как запускать (после установки CTFd):
+Как запускать (после установки CTFd):
 •	Переместить файлы в нужное место: mv auto-setup.py yandex_script.py google_script.py run.sh ctfd-config.json service_account.json ctfd/
 •	Запустить run.sh (./run.sh)
 
