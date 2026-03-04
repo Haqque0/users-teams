@@ -17,7 +17,7 @@
 2. В [Google Cloud Console](https://console.cloud.google.com/):
    - Создайте проект.
    - Включите **Google Sheets API** и **Google Drive API**.
-   - В разделе [Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts) создайте аккаунт с ролью **Editor**.
+   - В разделе [Service Accounts](https://console.cloud.google.com/iam-admin/serviceaccounts) выберите проект и создайте аккаунт с ролью **Editor**.
    - Вкладка **Keys** -> **Add Key** -> **Create new key** -> (JSON). Скачайте файл.
 3. В самой Google Таблице нажмите «Поделиться» и добавьте email сервисного аккаунта с правами **Editor**.
 
