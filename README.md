@@ -1,9 +1,6 @@
 # users-teams
-users and teams from Yandex and Google forms 
 
-# Скрипты для сбора данных из форм (Google / Yandex)
-
-Набор инструментов для автоматизации сбора данных из Google Forms или Яндекс Форм и последующей настройки через `auto-setup.py`.
+# Автоматизированный сбор данных из форм (Google / Yandex)
 
 ## Состав проекта
 * `google_script.py` — сбор данных из Google форм.
